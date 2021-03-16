@@ -7,6 +7,7 @@ function editNav() {
   }
 }
 
+
 // DOM Elements
 const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
@@ -15,10 +16,26 @@ const modalClose = document.querySelector(".close");
 const form = document.getElementById('form');
 const submit = document.querySelector('input[type=submit]');
 
-const messErr = document.createElement('span')
+// messages d'erreurs  à implémenter dans chaque span d'erreur
+const firstErreur = "Le prénom doit contenir au moins 2 caractères";
+const lastErreur = "le nom doit contenir au moins 2 caractères";
+const emailErreur = "Veuillez entrer une adresse email valide";
+const birthdateErreur = "Veuillez entrer une date de naissance valide";
+const quantityErreur = "Veuillez indiquer votre nombre de participation";
+const villesErreur = "Veuillez choisir une ville de participation";
+const checkboxErreur = "Cette case est obligatoire";
 
-messErr.textContent += "Ceci est un message d'erreur";
-messErr.classList.add('formData[data-error]::after');
+// creation du message erreur
+var messageErreur = document.createElement("span");
+messageErreur.classList.add('erreur');
+messageErreur.style.display="none";
+
+function erreurMessage(erreur,endroit){
+  messageErreur.textContent = erreur;
+  messageErreur.style.display="inline";
+  endroit.parentNode.appendChild(messageErreur);
+}
+
 // launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 
@@ -43,35 +60,39 @@ function validate() {
   var quantity = document.querySelector("input[name='quantity']");
   var radios = document.querySelectorAll("input[type=radio][name=location]");
   var checkboxReq = document.getElementById('checkbox1');
-  submit.addEventListener('submit', function(){formData.removeChild(messErr);})
+  var validation = true ;
+  messageErreur.style.display="none"; // reset les messages d'erreurs
 
   /* test du prénom */
   if (firstName.value.length < 2 || firstName.value == "") {
     console.log("le prenom doit contenir au moins 2 caracteres");
     firstName.focus();
-    firstName.parentNode.appendChild(messErr);
-    return false ;
+    erreurMessage(firstErreur,firstName);
+    validation = false ;
   }
 
   /* test du nom de famille */
-  else if (lastName.value.length < 2 || firstName.value == "") {
+  else if (lastName.value.length < 2 || lastName.value == "") {
     console.log("le nom doit contenir au moins 2 caracteres");
     lastName.focus()
-    return false ;
+    erreurMessage(lastErreur,lastName);
+    validation = false ;
   }
 
   /* test du mail */
   if (!email.value.match(/[a-z0-9_\-\.]+@[a-z0-9_\-\.]+\.[a-z]+/i)) {
     console.log(" Veuillez entrer une adresse mail valide");
     email.focus()
-    return false ;
+    erreurMessage(emailErreur,email);
+    validation = false ;
   }
 
   /* test que le nombre de fois spécifié est bien un nombre / entre 0 et 99 */
   if (quantity.value == "" || quantity.value > 99) {
     console.log("le nombre doit etre compris entre 0 et 99");
     quantity.focus()
-    return false ;
+    erreurMessage(quantityErreur,quantity);
+    validation = false ;
   }
 
   // boucle pour vérifier si chaque bouton radio est coché, si oui renvoie true
@@ -83,12 +104,18 @@ function validate() {
   }
 
   // si la boucle ne trouve rien renvoi false
-  if (valeur === undefined){console.log("erreur");return false;}
-  // checkbox required
-  if (checkboxReq.checked === false)
-  {console.log('il faut cocher la case !!!!');return false;}
-  return true ;
+  if (valeur === undefined){console.log("Veuillez choisir un lieu");
+
+  validation = false ;
 }
 
+  // checkbox required
+  if (checkboxReq.checked === false)
+    {console.log('il faut cocher la case !!!!');
+    erreurMessage(checkboxErreur,checkboxReq);
+    validation = false ;
+  }
 
-submit.addEventListener('onsubmit', function(){firstName.parentNode.removeChild(messErr);})
+  if (validation = false){};
+  return false
+}
