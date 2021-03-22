@@ -27,15 +27,42 @@ const messages = [
   "Veuillez accepter les conditions d'utilisations."
 ]
 
+// variables
+var firstName = document.getElementById('first');
+var lastName = document.getElementById('last');
+var email = document.getElementById('email');
+var date = document.getElementById('birthdate');
+var quantity = document.querySelector("input[name='quantity']");
+var radios = document.querySelectorAll("input[type=radio][name=location]");
+var checkboxReq = document.getElementById('checkbox1');
+var validation = true;
+
+
 // creation du message erreur
-var messageErreur = document.createElement("span");
-messageErreur.classList.add('erreur');
-messageErreur.style.display = "none";
+var messagePrenom = document.createElement("span");
+var messageNom = document.createElement("span");
+var messageEmail = document.createElement("span");
+var messageQuantite = document.createElement("span");
+var messageRadios = document.createElement("span");
+var messageDate = document.createElement("span");
+var messageCase = document.createElement("span");
+
+// fonction qui reset le message l'affichage des messages d'erreurs
+function messageReset() {
+  messagePrenom.style.display = "none";
+  messageNom.style.display = "none";
+  messageEmail.style.display = "none";
+  messageDate.style.display = "none";
+  messageRadios.style.display = "none";
+  messageQuantite.style.display = "none";
+  messageCase.style.display = "none";
+}
 // fonction qui append le message d'erreur
-function erreurMessage(erreur, endroit) {
-  messageErreur.textContent = erreur;
-  messageErreur.style.display = "inline";
-  endroit.parentNode.appendChild(messageErreur);
+function erreurMessage(variable, texte, endroit) {
+  variable.classList.add('erreur');
+  variable.textContent = texte;
+  variable.style.display = "inline";
+  endroit.parentNode.appendChild(variable);
 }
 
 // launch modal event
@@ -52,48 +79,38 @@ function closeModal() {
 /* on ferme la modale sur l'evenement click */
 modalClose.addEventListener("click", closeModal);
 
-
 /*FORMULAIRE */
 function validate() {
-  // variables
-  var firstName = document.getElementById('first');
-  var lastName = document.getElementById('last');
-  var email = document.getElementById('email');
-  var quantity = document.querySelector("input[name='quantity']");
-  var radios = document.querySelectorAll("input[type=radio][name=location]");
-  var checkboxReq = document.getElementById('checkbox1');
-  var validation = true;
-  messageErreur.style.display = "none"; // reset les messages d'erreurs
+  messageReset();
 
   /* test du prénom */
   if (firstName.value.length < 2 || firstName.value == "") {
-    console.log("le prenom doit contenir au moins 2 caracteres");
     firstName.focus();
-    erreurMessage(messages[0], firstName);
+    erreurMessage(messagePrenom, messages[0], firstName);
     validation = false;
   }
 
   /* test du nom de famille */
-  else if (lastName.value.length < 2 || lastName.value == "") {
-    console.log("le nom doit contenir au moins 2 caracteres");
+  if (lastName.value.length < 2 || lastName.value == "") {
     lastName.focus();
-    erreurMessage(messages[1], lastName);
+    erreurMessage(messageNom, messages[1], lastName);
     validation = false;
   }
-
   /* test du mail */
   if (!email.value.match(/[a-z0-9_\-\.]+@[a-z0-9_\-\.]+\.[a-z]+/i)) {
-    console.log(" Veuillez entrer une adresse mail valide");
     email.focus()
-    erreurMessage(messages[2], email);
+    erreurMessage(messageEmail, messages[2], email);
     validation = false;
   }
 
+  if (date.value == "" || date.value.length < 8) {
+    erreurMessage(messageDate, messages[3], date);
+    validation = false
+  }
   /* test que le nombre de fois spécifié est bien un nombre / entre 0 et 99 */
   if (quantity.value == "" || quantity.value > 99) {
-    console.log("le nombre doit etre compris entre 0 et 99");
     quantity.focus()
-    erreurMessage(messages[4], quantity);
+    erreurMessage(messageQuantite, messages[4], quantity);
     validation = false;
   }
 
@@ -110,22 +127,21 @@ function validate() {
 
   // si la boucle ne trouve rien renvoi false et affiche un message d'erreur
   if (valeur === undefined) {
-    console.log("Veuillez choisir un lieu");
-    messageErreur.textContent = messages[5];
-    messageErreur.style.display = "inline";
-    formData[6].insertAdjacentElement('beforebegin', messageErreur);
+    messageRadios.textContent = messages[5];
+    messageRadios.classList.add('erreur');
+    messageRadios.style.display = "inline";
+    formData[6].insertAdjacentElement('beforebegin', messageRadios);
     validation = false;
   }
 
   // checkbox required vérification que la case est cochée sinon affiche un message d'erreur
   if (checkboxReq.checked === false) {
-    console.log('il faut cocher la case !!!!');
-    messageErreur.textContent = messages[6];
-    messageErreur.style.display = "inline";
-    formData[6].insertAdjacentElement('beforebegin', messageErreur);
+    messageCase.textContent = messages[6];
+    messageCase.classList.add('erreur');
+    messageCase.style.display = "inline";
+    formData[6].insertAdjacentElement('afterend', messageCase);
     validation = false;
   }
 
   if (validation === false) { return false };
-
 }
