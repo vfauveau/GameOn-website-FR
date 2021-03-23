@@ -140,7 +140,7 @@ main {
 
 .button {
   background: #fe142f;
-  margin-top: 0.5em;
+  margin-top: 0.6em;
   padding: 1em;
   color: #fff;
   border-radius: 15px;
@@ -296,6 +296,14 @@ input[data-error]::after {
   transform: rotate(-55deg);
   left: 21%;
   top: 19%;
+}
+
+/* message de validation */
+.messageCorrige{
+  display: flex;
+  justify-self: center;
+  align-self: center;
+  font-size: 1em;
 }
 .close {
   position: absolute;

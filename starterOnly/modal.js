@@ -13,7 +13,7 @@ const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
 const formData = document.querySelectorAll(".formData");
 const modalClose = document.querySelector(".close");
-const form = document.getElementById('form');
+const formulaire = document.getElementById('form');
 const submit = document.querySelector('input[type=submit]');
 
 // messages d'erreurs  à implémenter dans chaque span d'erreur
@@ -27,17 +27,13 @@ const messages = [
   "Veuillez accepter les conditions d'utilisations."
 ]
 
-// variables
-var firstName = document.getElementById('first');
-var lastName = document.getElementById('last');
-var email = document.getElementById('email');
-var date = document.getElementById('birthdate');
-var quantity = document.querySelector("input[name='quantity']");
-var radios = document.querySelectorAll("input[type=radio][name=location]");
-var checkboxReq = document.getElementById('checkbox1');
-var validation = true;
-
-
+const firstName = document.getElementById('first');
+const lastName = document.getElementById('last');
+const email = document.getElementById('email');
+const date = document.getElementById('birthdate');
+const quantity = document.querySelector("input[name='quantity']");
+const radios = document.querySelectorAll("input[type=radio][name=location]");
+const checkboxReq = document.getElementById('checkbox1');
 // creation du message erreur
 var messagePrenom = document.createElement("span");
 var messageNom = document.createElement("span");
@@ -64,7 +60,10 @@ function erreurMessage(variable, texte, endroit) {
   variable.style.display = "inline";
   endroit.parentNode.appendChild(variable);
 }
-
+function erreurMessage2(variable, texte) {
+  variable.classList.add('erreur');
+  variable.textContent = texte;
+  variable.style.display = "inline";}
 // launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 
@@ -78,9 +77,12 @@ function closeModal() {
 }
 /* on ferme la modale sur l'evenement click */
 modalClose.addEventListener("click", closeModal);
+// variable
+const modalBody = document.getElementsByClassName('.modal-body');
 
 /*FORMULAIRE */
-function validate() {
+formulaire.addEventListener('submit', function validate(ev) {
+  var validation = true;
   messageReset();
 
   /* test du prénom */
@@ -98,18 +100,19 @@ function validate() {
   }
   /* test du mail */
   if (!email.value.match(/[a-z0-9_\-\.]+@[a-z0-9_\-\.]+\.[a-z]+/i)) {
-    email.focus()
+    email.focus();
     erreurMessage(messageEmail, messages[2], email);
     validation = false;
   }
 
   if (date.value == "" || date.value.length < 8) {
     erreurMessage(messageDate, messages[3], date);
+    date.focus()
     validation = false
   }
   /* test que le nombre de fois spécifié est bien un nombre / entre 0 et 99 */
   if (quantity.value == "" || quantity.value > 99) {
-    quantity.focus()
+    quantity.focus();
     erreurMessage(messageQuantite, messages[4], quantity);
     validation = false;
   }
@@ -119,29 +122,30 @@ function validate() {
   for (var i = 0; i < radios.length; i++) {
     if (radios[i].checked) {
       valeur = radios[i].value;
-      if (valeur != undefined) {
-        break;
-      }
     }
   }
 
   // si la boucle ne trouve rien renvoi false et affiche un message d'erreur
   if (valeur === undefined) {
-    messageRadios.textContent = messages[5];
-    messageRadios.classList.add('erreur');
-    messageRadios.style.display = "inline";
+    erreurMessage2(messageRadios, messages[5]);
     formData[6].insertAdjacentElement('beforebegin', messageRadios);
     validation = false;
   }
 
   // checkbox required vérification que la case est cochée sinon affiche un message d'erreur
   if (checkboxReq.checked === false) {
-    messageCase.textContent = messages[6];
-    messageCase.classList.add('erreur');
-    messageCase.style.display = "inline";
+    erreurMessage2(messageCase, messages[6]);
     formData[6].insertAdjacentElement('afterend', messageCase);
     validation = false;
   }
+  // si au moins un élément du formulaire est invalide, empêche l'envoi, conserve les valeurs et retourne false ;
+  if (validation === false) {
+    ev.preventDefault();
+    return false
+  }
 
-  if (validation === false) { return false };
-}
+  if (validation === true) {
+    return true
+  }
+});
+
