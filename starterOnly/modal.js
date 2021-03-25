@@ -26,7 +26,6 @@ const messages = [
   "Veuillez choisir une ville de participation.",
   "Veuillez accepter les conditions d'utilisations."
 ]
-
 const firstName = document.getElementById('first');
 const lastName = document.getElementById('last');
 const email = document.getElementById('email');
@@ -75,6 +74,7 @@ function launchModal() {
 function closeModal() {
   modalbg.style.display = "none";
 }
+
 /* on ferme la modale sur l'evenement click */
 modalClose.addEventListener("click", closeModal);
 // variable
@@ -83,6 +83,7 @@ const modalBody = document.getElementsByClassName('.modal-body');
 /*FORMULAIRE */
 formulaire.addEventListener('submit', function validate(ev) {
   var validation = true;
+  ev.preventDefault();
   messageReset();
 
   /* test du prénom */
@@ -140,12 +141,23 @@ formulaire.addEventListener('submit', function validate(ev) {
   }
   // si au moins un élément du formulaire est invalide, empêche l'envoi, conserve les valeurs et retourne false ;
   if (validation === false) {
-    ev.preventDefault();
     return false
   }
 
   if (validation === true) {
+    // on montre les valeurs dans la console log
+    console.log("Prénom : " + firstName.value);
+    console.log("Nom : " + lastName.value);
+    console.log("Email : "+ email.value);
+    console.log('Nombre de participations : '+ quantity.value);
+    console.log('Date de naissance : '+ birthdate.value);
+    console.log('Endroit : '+ valeur);
+    // la modale invisible superpose le formulaire affiche le message
+    var divValidation = document.getElementById('div-Validation');
+    divValidation.style.display="flex";
+    // on paramètre le nouveau bouton pour fermer la modale
+    var buttonClose = document.getElementById('btn-close');
+    buttonClose.addEventListener('click', closeModal);
     return true
   }
 });
-
