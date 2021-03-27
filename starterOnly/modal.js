@@ -15,7 +15,7 @@ const formData = document.querySelectorAll(".formData");
 const modalClose = document.querySelector(".close");
 const formulaire = document.getElementById('form');
 const submit = document.querySelector('input[type=submit]');
-
+const modalBody = document.getElementsByClassName('.modal-body');
 // messages d'erreurs  à implémenter dans chaque span d'erreur
 const messages = [
   "Le prénom doit contenir au moins 2 caractères.",
@@ -33,7 +33,7 @@ const date = document.getElementById('birthdate');
 const quantity = document.querySelector("input[name='quantity']");
 const radios = document.querySelectorAll("input[type=radio][name=location]");
 const checkboxReq = document.getElementById('checkbox1');
-// creation du message erreur
+// creation des messages erreurs
 var messagePrenom = document.createElement("span");
 var messageNom = document.createElement("span");
 var messageEmail = document.createElement("span");
@@ -52,17 +52,21 @@ function messageReset() {
   messageQuantite.style.display = "none";
   messageCase.style.display = "none";
 }
-// fonction qui append le message d'erreur
+/* fonction qui append le message d'erreur avec 3 paramètres (la variable contenant le span associé à l'erreur, le texte que ce message doit contenir et l'endroit où il doit être ajouté(
+  on prend le formdata parent de l'input en question))*/
 function erreurMessage(variable, texte, endroit) {
   variable.classList.add('erreur');
   variable.textContent = texte;
   variable.style.display = "inline";
   endroit.parentNode.appendChild(variable);
 }
+
+/* variante sans le append pour des éléments posant des problèmes lors de l'intégration du message d'erreur */
 function erreurMessage2(variable, texte) {
   variable.classList.add('erreur');
   variable.textContent = texte;
   variable.style.display = "inline";}
+
 // launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 
@@ -77,12 +81,10 @@ function closeModal() {
 
 /* on ferme la modale sur l'evenement click */
 modalClose.addEventListener("click", closeModal);
-// variable
-const modalBody = document.getElementsByClassName('.modal-body');
 
 /*FORMULAIRE */
 formulaire.addEventListener('submit', function validate(ev) {
-  var validation = true;
+  var validation = true; // booléen qui controlera la validation
   ev.preventDefault();
   messageReset();
 
@@ -99,13 +101,13 @@ formulaire.addEventListener('submit', function validate(ev) {
     erreurMessage(messageNom, messages[1], lastName);
     validation = false;
   }
-  /* test du mail */
+  /* test du mail regex de vérification */
   if (!email.value.match(/[a-z0-9_\-\.]+@[a-z0-9_\-\.]+\.[a-z]+/i)) {
     email.focus();
     erreurMessage(messageEmail, messages[2], email);
     validation = false;
   }
-
+// controle qu'une valeur date est remplie (pas sa validité)
   if (date.value == "" || date.value.length < 8) {
     erreurMessage(messageDate, messages[3], date);
     date.focus()
@@ -126,7 +128,7 @@ formulaire.addEventListener('submit', function validate(ev) {
     }
   }
 
-  // si la boucle ne trouve rien renvoi false et affiche un message d'erreur
+  // si après la boucle la valeur est toujours indéfinie, validation devient false et affiche un message d'erreur
   if (valeur === undefined) {
     erreurMessage2(messageRadios, messages[5]);
     formData[6].insertAdjacentElement('beforebegin', messageRadios);
@@ -152,12 +154,12 @@ formulaire.addEventListener('submit', function validate(ev) {
     console.log('Nombre de participations : '+ quantity.value);
     console.log('Date de naissance : '+ birthdate.value);
     console.log('Endroit : '+ valeur);
-    // la modale invisible superpose le formulaire affiche le message
+    // la modale invisible superpose le formulaire affiche le message et devient visible
     var divValidation = document.getElementById('div-Validation');
     divValidation.style.display="flex";
-    // on paramètre le nouveau bouton pour fermer la modale
+    // on paramètre le nouveau bouton pour fermer la modale.
     var buttonClose = document.getElementById('btn-close');
     buttonClose.addEventListener('click', closeModal);
-    return true
+    return true;
   }
 });

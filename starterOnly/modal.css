@@ -332,13 +332,12 @@ input[data-error]::after {
 .form-validated--closeButton {
     display: none;
 }
-.divValidation__wrap{
+.divValidation__wrap {
     display: inherit;
     height: 100%;
     flex-direction: column;
     justify-content: space-around;
     padding-top: 33%;
-
 }
 /* FIN AJOUT CSS */
 .close {
@@ -524,6 +523,12 @@ footer {
     padding-right: 2vw;
     margin: 0 20px;
 }
+/* media querries */
+@media screen and (min-width : 801px) and (max-width: 900px){
+    .hero-headline{
+        font-size: 4.7rem;
+    }
+}
 @media screen and (max-width: 800px) {
     .hero-section {
         display: block;
@@ -563,6 +568,29 @@ footer {
     }
 }
 
+@media screen and (max-width: 500px) {
+    .hero-text {
+        font-size: 1.3rem;
+        width: 320px;
+        max-width: 340px;
+    }
+    .hero-content {
+        padding-left: 0.1rem;
+    }
+    .topnav a.icon {
+        margin-top: 0;
+    }
+}
+@media screen and (max-width: 380px) {
+    .hero-text {
+        font-size: 1.2rem;
+        width: 320px;
+
+    }
+    .hero-headline{
+        font-size: 4rem;
+    }
+}
 @keyframes modalopen {
     from {
         opacity: 0;
